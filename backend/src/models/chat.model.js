@@ -4,7 +4,7 @@ const chatSchema = new Schema(
   {
     chatType: {
       type: String,
-      enum: ["private", "group", "global"],
+      enum: ["private", "global"],
       default: "private",
     },
 
