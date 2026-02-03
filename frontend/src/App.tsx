@@ -1,10 +1,10 @@
-import LoginPage from "./pages/LoginPage"
-
+// import LoginPage from "./pages/LoginPage"
+import Landing from "./pages/Landing"
 function App() {
 
   return (
     <>
-      <LoginPage />
+      <Landing />
     </>
   )
 }
