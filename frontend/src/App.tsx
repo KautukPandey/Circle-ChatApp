@@ -1,11 +1,12 @@
 // import LoginPage from "./pages/LoginPage"
 // import Landing from "./pages/Landing"
-import ChatPage from "./pages/Chat"
+// import Chat from "./pages/Chat"
+import Settings from "./pages/Settings"
 function App() {
 
   return (
     <>
-      <ChatPage />
+      <Settings />
     </>
   )
 }
