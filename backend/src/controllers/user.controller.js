@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const register = async(req,res)=>{
     try {
@@ -9,9 +10,19 @@ export const register = async(req,res)=>{
         if(!username||!email||!password){
             return res.status(400).json({ message: "All fields required" });
         }
-        const existingUser = await User.findOne({email})
+
+        const existingUser = await User.findOne({
+            $or: [{ username }, { email }]
+        })
+
         if(existingUser){
-            return res.status(400).json({message: "User already exists"})
+            return res.status(400).json({message: "User with same email or username already exists"})
+        }
+
+        const avatarLocalPath = req.files?.avatar[0]?.path
+
+        if(!avatarLocalPath){
+
         }
 
         const user = await User.create({
@@ -20,7 +31,7 @@ export const register = async(req,res)=>{
             password
         })
 
-        res.status(201).json({ message: "User registered" });
+        res.status(201).json({ message: "User registered", user});
 
     } catch (error) {
         res.status(500).json({ message: "Server error" });
