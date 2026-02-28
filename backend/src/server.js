@@ -1,11 +1,14 @@
-import dotenv from "dotenv"
-import app from "./app.js"
-import connectDB from "./config/db.js"
-dotenv.config()
+import { Server } from "socket.io"
+import { app } from "./app.js"
+import { initSockets } from "./socket/index.js";
+import { httpServer } from "./app.js";
 
-const PORT = process.env.PORT || 5000
-connectDB()
-app.listen(PORT,()=>{
-    console.log(`Server running on port ${PORT}`);
-    
+
+export const io = new Server(httpServer, {
+    cors: {
+        origin: true,
+        credentials: true
+    }
 })
+
+initSockets(io);

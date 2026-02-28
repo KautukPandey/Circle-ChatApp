@@ -1,30 +1,36 @@
-import express from "express";
-import userRouter from "./routes/user.routes.js";
+import "./utils/env.js"
+import express from "express"
 import cors from "cors"
-import cookieParser from "cookie-parser"
-
 import { createServer } from "http"
-import { Server } from "socket.io"
+import connectDB from "./config/db.js";
 
-const app = express()
+
+export const app = express()
 
 app.use(cors({
     origin: true,
     credentials: true
 }))
-app.use(express.json())
-app.use(cookieParser())
 
-const httpServer = createServer(app);
+export const httpServer = createServer(app);
+
+
+app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
+connectDB()
+    .then(() => {
+        httpServer.listen(process.env.PORT || 3000, () => {
+            console.log(`Server is running at port : ${process.env.PORT || 3000}`);
+        })
+    })
+    .catch((err) => {
+        console.log("MONOGODB Connection Failed!!", err);
+    })
 
-const io = new Server(httpServer, {
-    cors: {
-        origin: true
-    }
-})
 
-app.use("/users",userRouter)
+import userRouter from "./routes/user.routes.js"
+import messageRouter from "./routes/message.routes.js"
 
-export default app
+app.use('/users', userRouter)
+app.use('/messages', messageRouter)
