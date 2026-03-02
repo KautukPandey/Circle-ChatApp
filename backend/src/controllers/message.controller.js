@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { getRoomMessages, createMessage } from "../services/message.service.js";
 
-const getRoomMessageHistory = asyncHandler( async (req, res) => {
+const getRoomMessagesHistory = asyncHandler( async (req, res) => {
     const {roomId} = req.params;
     const { cursor = null, limit = 40} = req.body;
 
@@ -39,4 +39,4 @@ const createRoomMessages = asyncHandler( async (req, res) => {
     return res.status(201).json(messsage);
 })
 
-export {createRoomMessages, getRoomMessageHistory};
+export {createRoomMessages, getRoomMessagesHistory};

@@ -29,5 +29,5 @@ const messageSchema = new Schema(
   { timestamps: true }
 );
 
-export default model("Message", messageSchema);
+export const Message =  model("Message", messageSchema);
     

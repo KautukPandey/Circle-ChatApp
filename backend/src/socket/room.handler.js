@@ -1,4 +1,4 @@
-import { getRoomMessages } from "../services/message.service";
+import { getRoomMessages } from "../services/message.service.js";
 
 const users = new Map();
 const typingUsers = new Map();
