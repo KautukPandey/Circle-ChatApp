@@ -1,6 +1,7 @@
-import "./utils/env.js"
+import "dotenv/config"
 import express from "express"
 import cors from "cors"
+import cookieParser from "cookie-parser"
 import { createServer } from "http"
 import connectDB from "./config/db.js";
 
@@ -17,6 +18,7 @@ export const httpServer = createServer(app);
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
 
 connectDB()
     .then(() => {
@@ -27,10 +29,3 @@ connectDB()
     .catch((err) => {
         console.log("MONOGODB Connection Failed!!", err);
     })
-
-
-import userRouter from "./routes/user.routes.js"
-import messageRouter from "./routes/message.routes.js"
-
-app.use('/users', userRouter)
-app.use('/messages', messageRouter)

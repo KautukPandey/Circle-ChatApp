@@ -27,7 +27,7 @@ const createRoomMessages = asyncHandler( async (req, res) => {
     const { sender, text } = req.body;
 
     if(!roomId) {
-        return res.staus(400).json({ error: "roomId is required!"});
+        return res.status(400).json({ error: "roomId is required!"});
     }
 
     const message = await createMessage({
@@ -36,7 +36,7 @@ const createRoomMessages = asyncHandler( async (req, res) => {
         text
     })
 
-    return res.status(201).json(messsage);
+    return res.status(201).json(message);
 })
 
 export {createRoomMessages, getRoomMessagesHistory};

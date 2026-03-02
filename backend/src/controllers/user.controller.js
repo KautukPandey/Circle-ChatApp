@@ -3,78 +3,76 @@ import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-export const register = async(req,res)=>{
-    try {
-        const {username, email, password} = req.body;
+export const register = async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
 
-        if(!username||!email||!password){
-            return res.status(400).json({ message: "All fields required" });
-        }
-
-        const existingUser = await User.findOne({
-            $or: [{ username }, { email }]
-        })
-
-        if(existingUser){
-            return res.status(400).json({message: "User with same email or username already exists"})
-        }
-
-        const avatarLocalPath = req.files?.avatar[0]?.path
-
-        if(!avatarLocalPath){
-
-        }
-
-        const user = await User.create({
-            username,
-            email,
-            password
-        })
-
-        res.status(201).json({ message: "User registered", user});
-
-    } catch (error) {
-        res.status(500).json({ message: "Server error" });
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: "All fields required" });
     }
-}
 
-export const login = async(req,res)=>{
-    try {
-        const {email,password} = req.body;
+    const existingUser = await User.findOne({
+      $or: [{ username }, { email }],
+    });
 
-        const user = await User.findOne({email})
-        if (!user)
-            return res.status(400).json({ message: "Invalid credentials" });
-
-        const isMatch = await user.comparePassword(password)
-        if(!isMatch)
-            return res.status(400).json({ message: "Invalid credentials" });
-        
-        const token = jwt.sign(
-            {id: user._id},
-            process.env.JWT_SECRET,
-            {
-            expiresIn: '1h'
-            }
-        )
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 60 * 60 * 1000
-        })
-
-        return res.status(200).json({
-            message: 'Login successful',
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email
-            }
-        })  
-
-    } catch (error) {
-        res.status(500).json({ message: "Server error" });
-
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ message: "User with same email or username already exists" });
     }
-}
+
+    const user = await User.create({
+      username,
+      email,
+      password,
+    });
+
+    res.status(201).json({ message: "User registered", user });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch)
+      return res.status(400).json({ message: "Invalid credentials" });
+
+    const token = jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "1h",
+    });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getAllUser = asyncHandler(async (req, res) => {
+  const users = await User.find().select("-password");
+
+  return res.status(200).json({
+    success: true,
+    count: users.length,
+    users,
+  });
+});

@@ -13,7 +13,6 @@ export const registerRoomHandlers = (io, socket) => {
 
             socket.to(roomId).emit("joined-user", username);
 
-            io.to(roomId).emit("joined-user", username);
 
             try{
                 const {messages} = await getRoomMessages({roomId});
@@ -50,6 +49,10 @@ export const registerRoomHandlers = (io, socket) => {
 
         socket.to(roomId).emit("typing-user", Array.from(roomTyping));
 
-        
+        // Auto-clear typing after 3 seconds
+        setTimeout(() => {
+            roomTyping.delete(username);
+            socket.to(roomId).emit("typing-user", Array.from(roomTyping));
+        }, 3000);
     })
 }

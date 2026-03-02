@@ -12,3 +12,9 @@ export const io = new Server(httpServer, {
 })
 
 initSockets(io);
+
+import userRouter from "./routes/user.routes.js"
+import messageRouter from "./routes/message.routes.js"
+
+app.use('/users', userRouter)
+app.use('/messages', messageRouter)

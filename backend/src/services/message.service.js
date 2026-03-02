@@ -9,7 +9,7 @@ const getRoomMessages = async ({roomId, cursor = null, limit = 40}) => {
     }
 
     const messages = await Message.find(query)
-    .sort({_id: 1})
+    .sort({_id: -1})
     .limit(limit+1)
 
     const hasMore = messages.length > limit;
@@ -21,7 +21,7 @@ const getRoomMessages = async ({roomId, cursor = null, limit = 40}) => {
     const lastMessage = messages.at(-1);
 
     return {
-        messages: messages.reverse(),
+        messages,
         nextCursor: lastMessage ? lastMessage._id.toString() : null,
         hasMore
     }

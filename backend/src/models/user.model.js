@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const userSchema = new Schema(
 	{
@@ -22,7 +23,6 @@ const userSchema = new Schema(
         },
         avatar: {
             type: String, // Link from cloudinary
-            required: true,
         },
         refreshToken: {
             type: String
@@ -50,8 +50,7 @@ userSchema.methods.generateAccessToken = function(){
         {
             _id: this._id,
             email: this.email,
-            username: this.username,
-            fullname: this.fullname
+            username: this.username
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
